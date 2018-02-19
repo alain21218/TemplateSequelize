@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "dev",
+    "password": "dev",
+    "database": "magic_manager",
+    "host": "192.168.0.25",
+    "port": 3306,
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "dev",
+    "password": "dev",
+    "database": "magic_manager",
+    "host": "192.168.0.25",
+    "port": 3306,
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "dev",
+    "password": "dev",
+    "database": "magic_manager",
+    "host": "192.168.0.25",
+    "port": 3306,
+    "dialect": "mysql"
+  }
+}

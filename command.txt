@@ -1,0 +1,118 @@
+######### EXPRESSJS ##########
+
+#In project folder
+-------------------------------------------------
+mkdir -p ./{bin,server}
+npm init -y
+npm install --save express body-parser morgan
+notepad app.js
+-------------------------------------------------
+
+const express = require('express');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+
+// Set up the express app
+const app = express();
+
+// Log requests to the console.
+app.use(logger('dev'));
+
+// Parse incoming requests data (https://github.com/expressjs/body-parser)
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Setup a default catch-all route that sends back a welcome message in JSON format.
+app.get('*', (req, res) => res.status(200).send({
+  message: 'Welcome to the beginning of nothingness.',
+}));
+
+module.exports = app;
+
+---------------------------------------------------
+notepad bin/www.js
+npm i -D nodemon
+#edit package.json
+---------------------------------------------------
+
+"start:dev": "nodemon ./bin/www",
+
+---------------------------------------------------
+npm run start:dev
+
+
+
+
+
+########## SEQUELIZE ##########
+
+npm install -g sequelize-cli
+notepad .sequelizerc
+---------------------------------------------------
+
+const path = require('path');
+
+module.exports = {
+  "config": path.resolve('./server/config', 'config.json'),
+  "models-path": path.resolve('./server/models'),
+  "seeders-path": path.resolve('./server/seeders'),
+  "migrations-path": path.resolve('./server/migrations')
+};
+
+----------------------------------------------------
+npm install --save sequelize pg pg-hstore
+sequelize init
+#replace auto generated index.js
+----------------------------------------------------
+
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(module.filename);
+const env = process.env.NODE_ENV || 'development';
+const config = require(`${__dirname}/../config/config.json`)[env];
+const db = {};
+
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable]);
+} else {
+  sequelize = new Sequelize(
+    config.database, config.username, config.password, config
+  );
+}
+
+fs
+  .readdirSync(__dirname)
+  .filter(file =>
+    (file.indexOf('.') !== 0) &&
+    (file !== basename) &&
+    (file.slice(-3) === '.js'))
+  .forEach(file => {
+    const model = sequelize.import(path.join(__dirname, file));
+    db[model.name] = model;
+  });
+
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+
+-----------------------------------------------------
+#create a db (mysql here)
+npm install --save mysql2
+#models creation
+sequelize model:create --name TodoItem --attributes content:string,complete:boolean
+#check migration files
+sequelize db:migrate
+
+Next steps on
+##########################################################################################
+https://scotch.io/tutorials/getting-started-with-node-express-and-postgres-using-sequelize
+##########################################################################################
